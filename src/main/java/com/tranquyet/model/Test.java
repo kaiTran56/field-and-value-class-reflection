@@ -4,6 +4,8 @@ import lombok.NonNull;
 import lombok.SneakyThrows;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.*;
 
 public final class Test {
@@ -13,33 +15,27 @@ public final class Test {
         student.setCourse("Hello");
         student.setId("123");
         student.setName("TranQuyet");
-        List<String> listString = Arrays.asList(new String[]{"a", "b", "c"});
+        List<String> listString = Arrays.asList("a", "b", "c");
         //List<String> listString_1 = Arrays.asList(new String[]{"a", "b", "c"});
         student.setListString(listString);
 
-//            Class<?> clazz = Class.forName("com.tranquyet.model.Student");
-//            Field[] fieldlist = clazz.getDeclaredFields();
-//            Arrays.asList(fieldlist).forEach(p->{
-//                p.setAccessible(true); // permit access to private
-//                System.out.println("field name = " + p.getName()); // get field name
-//                try {
-//                    System.out.println("value = " + p.get(student)); // get value
-//                } catch (IllegalAccessException e) {
-//                    e.printStackTrace();
-//                }
-//                System.out.println("field type  = " + p.getType()); // get type of value
-//                System.out.println("modifiers = " +  Modifier.toString(p.getModifiers())); // get access modifiers
-//            });
-//
-//        new Student().toString();
-//        System.out.println("Check Property: "+student.toString());
-//        String test_1 = "Hello";
-//        String test_2 ="Hey";
-        String path = "com.tranquyet.model.Student";
-        List<String > params = Arrays.asList("listString", "id", "name");
-        Map<String, Object> check = new Test().getFieldsAndValues(path,
-                student, params);
-        System.out.println(check);
+//        List<Parameter> params = Arrays.asList(Test.class.getMethod("checkParametersMethod").getParameters());
+//        params.forEach(System.out::println);
+        /**
+         * GET ALL METHODS and PARAM in class
+         */
+        Test test = new Test();
+        Class<?> checkParams = test.getClass();
+        Method[] methods = checkParams.getMethods();
+        Arrays.stream(methods).filter(p->p.getName().equals("checkParametersMethod")).forEach(p->{
+            System.out.println("METHOD: "+p.getName());
+            Parameter[] params = p.getParameters();
+            List.of(params).forEach(param->{
+                System.out.println("Parameter: "+param.getName());
+                System.out.println("Type: "+param.getParameterizedType());
+            });
+        });
+
     }
 
     /**
@@ -50,7 +46,8 @@ public final class Test {
      * @param <T>           generic type of object
      * @return              a map with keys are fields and value is properties of object
      */
-    public <T> Map<String, Object> getFieldsAndValues(@NonNull String objPath, @NonNull T obj, List<String> omitFields){
+    public <T> Map<String, Object> getFieldsAndValues(@NonNull String objPath,
+                                                      @NonNull T obj, List<String> omitFields){
         try {
             Map<String, Object> objMap = new HashMap<>();
             Class<?> classObj = Class.forName(objPath);
@@ -70,5 +67,9 @@ public final class Test {
             e.printStackTrace();
         }
         return null;
+    }
+    public void checkParametersMethod(String name, String id,
+                                      String password, String address){
+        System.out.println(name + " "+ id + " "+ password + " "+ address);
     }
 }
