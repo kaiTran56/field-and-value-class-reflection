@@ -43,12 +43,12 @@ public final class Test {
     }
 
     /**
-     *
-     * @param objPath
-     * @param obj
-     * @param omitFields
-     * @param <T>
-     * @return
+     * Get fields name and values of class
+     * @param objPath       path of class field
+     * @param obj           Object of class
+     * @param omitFields    prevent get value from fields
+     * @param <T>           generic type of object
+     * @return              a map with keys are fields and value is properties of object
      */
     public <T> Map<String, Object> getFieldsAndValues(@NonNull String objPath, @NonNull T obj, List<String> omitFields){
         try {
